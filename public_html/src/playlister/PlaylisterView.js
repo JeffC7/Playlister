@@ -109,13 +109,21 @@ export default class PlaylisterView {
             // MAKE AN ITEM (i.e. CARD)
             let song = playlist.getSongAt(i);
             let itemDiv = document.createElement("div");
+            let a = document.createElement('a'); 
             itemDiv.classList.add("list-card");
             itemDiv.classList.add("unselected-list-card");
             itemDiv.id = "playlist-card-" + (i + 1);
 
             // PUT THE CONTENT INTO THE CARD
             let itemText = document.createTextNode(song.title + " by " + song.artist);
-            itemDiv.appendChild(itemText);
+            let itemNumberText = document.createTextNode((i + 1) + ". "); // what i wrote
+            itemDiv.appendChild(itemNumberText); // what i wrote
+            a.href = "https://www.youtube.com/watch?v=" + song.youTubeId; // what i wrote               
+            a.appendChild(itemText);
+            //itemDiv.appendChild(itemText); this is mckenna's 
+            itemDiv.appendChild(a); // what i wrote
+
+            
 
             // AND PUT THE CARD INTO THE UI
             itemsDiv.appendChild(itemDiv);
