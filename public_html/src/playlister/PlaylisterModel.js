@@ -1,5 +1,7 @@
 import jsTPS from "../common/jsTPS.js";
 import Playlist from "./Playlist.js";
+import AddSong_Transaction from "./transactions/AddSong_Transaction.js";
+import DeleteSong_Transaction from "./transactions/DeleteSong_Transaction.js";
 import MoveSong_Transaction from "./transactions/MoveSong_Transaction.js";
 
 /**
@@ -83,6 +85,16 @@ export default class PlaylisterModel {
     setDeleteListId(initId) {
         this.deleteListId = initId;
     }
+
+    getDeleteSongId() {
+        return this.deleteSongId;
+    }
+
+    setDeleteSongId(initId) {
+        this.deleteSongId = initId;
+    }
+
+
 
     toggleConfirmDialogOpen() {
         this.confirmDialogOpen = !this.confirmDialogOpen;
@@ -244,6 +256,31 @@ export default class PlaylisterModel {
         this.saveLists();
     }
 
+    addSong() {
+        let rickRoll = {title: "Untitled", artist: "Unknown", youTubeId: "dQw4w9WgXcQ"}; //create the rickRoll object to push to the currentList
+        this.currentList.songs.push(rickRoll); //push rickRoll in as the default song when adding a song
+        this.saveLists(); //save the new list since we added a new song 
+        this.view.refreshPlaylist(this.currentList); // refresh
+    }
+
+    removeSong() {
+        this.currentList.songs.pop();
+        this.saveLists();
+        this.view.refreshPlaylist(this.currentList);
+    }
+
+    deleteSong(index) {
+        this.currentList.songs.splice(index, 1);
+        this.saveLists();
+        this.view.refreshPlaylist(this.currentList);
+    }
+
+    addDeleteSong(index, song) {
+        this.currentList.songs.splice(index, 0, song);
+        this.saveLists();
+        this.view.refreshPlaylist(this.currentList);
+    }
+
     // SIMPLE UNDO/REDO FUNCTIONS, NOTE THESE USE TRANSACTIONS
 
     undo() {
@@ -268,4 +305,17 @@ export default class PlaylisterModel {
         this.tps.addTransaction(transaction);
         this.view.updateToolbarButtons(this);
     }
+
+    addSongTransaction() {
+        let transaction = new AddSong_Transaction(this);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
+    addDeleteSongTransaction(index, song) {
+        let transaction = new DeleteSong_Transaction(this, index, song);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
 }

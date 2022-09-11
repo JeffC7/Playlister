@@ -7,6 +7,7 @@
  * @author McKilla Gorilla
  * @author ?
  */
+
 export default class PlaylisterView {
     constructor() {}
 
@@ -18,6 +19,7 @@ export default class PlaylisterView {
     init() {
         // @todo - ONCE YOU IMPLEMENT THE FOOLPROOF DESIGN STUFF YOU SHOULD PROBABLY
         // START THESE BUTTONS OFF AS DISABLED
+        this.enableButton('add-button');
         this.enableButton('undo-button');
         this.enableButton('redo-button');
         this.enableButton('close-button');
@@ -114,6 +116,34 @@ export default class PlaylisterView {
             itemDiv.classList.add("unselected-list-card");
             itemDiv.id = "playlist-card-" + (i + 1);
 
+            let delButton = document.createElement("input"); // what i wrote
+            delButton.setAttribute('type', 'button'); // what i wrote
+            delButton.setAttribute('value', 'X'); // what i wrote
+            delButton.classList.add("list-card-button");
+            // HANDLES DELETING A SONG
+            delButton.onmousedown = (event) => { 
+                // DON'T PROPOGATE THIS INTERACTION TO LOWER-LEVEL CONTROLS
+                this.controller.ignoreParentClick(event);
+    
+                // RECORD THE ID OF THE SONG THE USER WISHES TO DELETE
+                // SO THAT THE MODAL KNOWS WHICH ONE IT IS
+                this.controller.model.setDeleteSongId(i);
+    
+                // VERIFY THAT THE USER REALLY WANTS TO DELETE THE SONG
+                // THE CODE BELOW OPENS UP THE SONG DELETE VERIFICATION DIALOG
+                let songName = this.controller.model.currentList.songs[i];
+                let deleteSpan = document.getElementById("delete-song-span");
+                deleteSpan.innerHTML = "";
+                deleteSpan.appendChild(document.createTextNode(songName.title));
+                let deleteListModal = document.getElementById("delete-song-modal");
+    
+                // OPEN UP THE DIALOG
+                deleteListModal.classList.add("is-visible");
+                this.controller.model.toggleConfirmDialogOpen();
+                console.log("clicked");
+                
+            }
+
             // PUT THE CONTENT INTO THE CARD
             let itemText = document.createTextNode(song.title + " by " + song.artist);
             let itemNumberText = document.createTextNode((i + 1) + ". "); // what i wrote
@@ -122,7 +152,7 @@ export default class PlaylisterView {
             a.appendChild(itemText);
             //itemDiv.appendChild(itemText); this is mckenna's 
             itemDiv.appendChild(a); // what i wrote
-
+            itemDiv.appendChild(delButton); // what i wrote
             
 
             // AND PUT THE CARD INTO THE UI
@@ -204,10 +234,17 @@ export default class PlaylisterView {
     updateToolbarButtons(model) {
         let tps = model.tps;
         if (model.confirmDialogOpen) {
+            this.disableButton('add-button');
             this.disableButton("add-list-button");
             this.disableButton("undo-button");
             this.disableButton("redo-button");
             this.disableButton("close-button");
+        } else {
+            this.enableButton('add-button');
+            this.enableButton("add-list-button");
+            this.enableButton("undo-button");
+            this.enableButton("redo-button");
+            this.enableButton("close-button");
         }
     }
 

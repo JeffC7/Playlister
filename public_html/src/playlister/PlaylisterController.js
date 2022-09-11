@@ -64,6 +64,11 @@ export default class PlaylisterController {
             this.model.unselectAll();
             this.model.unselectCurrentList();
         }
+
+        document.getElementById("add-button").onmousedown = (event) => {
+            // this.model.addSong();
+            this.model.addSongTransaction();
+        }
     }
 
     /*
@@ -101,7 +106,37 @@ export default class PlaylisterController {
             // CLOSE THE MODAL
             let deleteListModal = document.getElementById("delete-list-modal");
             deleteListModal.classList.remove("is-visible");
-        }        
+        }
+        
+        let deleteSongConfirmButton = document.getElementById("delete-song-confirm-button");
+        deleteSongConfirmButton.onclick = (event) => {
+            let deleteSongId = this.model.getDeleteSongId();
+
+            // DELETE THE SONG, THIS IS NOT UNDOABLE
+            let song = this.model.currentList.songs[deleteSongId];
+            // let cloneSong = JSON.parse(JSON.stringify(song)); //stringify to turn song into a string then parse turns it into a js object
+            // deep copy = pointer to values are different and if the values had pointers to them, they'd be different too
+            this.model.addDeleteSongTransaction(deleteSongId, song);
+
+            // ALLOW OTHER INTERACTIONS
+            this.model.toggleConfirmDialogOpen();
+
+            // CLOSE THE MODAL
+            let deleteListModal = document.getElementById("delete-song-modal");
+            deleteListModal.classList.remove("is-visible");
+        }
+
+        // RESPOND TO THE USER CLOSING THE DELETE PLAYLIST MODAL
+        let deleteSongCancelButton = document.getElementById("delete-song-cancel-button");
+        deleteSongCancelButton.onclick = (event) => {
+            // ALLOW OTHER INTERACTIONS
+            this.model.toggleConfirmDialogOpen();
+            
+            // CLOSE THE MODAL
+            let deleteListModal = document.getElementById("delete-song-modal");
+            deleteListModal.classList.remove("is-visible");
+        }
+        
     }
 
     /*
