@@ -65,6 +65,7 @@ export default class PlaylisterController {
             this.model.unselectCurrentList();
         }
 
+        // HANDLER FOR ADDING A NEW SONG BUTTON
         document.getElementById("add-button").onmousedown = (event) => {
             // this.model.addSong();
             this.model.addSongTransaction();
@@ -108,6 +109,7 @@ export default class PlaylisterController {
             deleteListModal.classList.remove("is-visible");
         }
         
+        // RESPOND TO THE USER CONFIRMTING TO DELETE A SONG
         let deleteSongConfirmButton = document.getElementById("delete-song-confirm-button");
         deleteSongConfirmButton.onclick = (event) => {
             let deleteSongId = this.model.getDeleteSongId();
@@ -126,7 +128,7 @@ export default class PlaylisterController {
             deleteListModal.classList.remove("is-visible");
         }
 
-        // RESPOND TO THE USER CLOSING THE DELETE PLAYLIST MODAL
+        // RESPOND TO THE USER CLOSING THE DELETE SONG MODAL
         let deleteSongCancelButton = document.getElementById("delete-song-cancel-button");
         deleteSongCancelButton.onclick = (event) => {
             // ALLOW OTHER INTERACTIONS
@@ -135,6 +137,37 @@ export default class PlaylisterController {
             // CLOSE THE MODAL
             let deleteListModal = document.getElementById("delete-song-modal");
             deleteListModal.classList.remove("is-visible");
+        }
+
+        
+        // RESPOND TO THE USER EDIT SONG
+        let editConfirmButton = document.getElementById("edit-song-confirm-button");
+        editConfirmButton.onclick = (event) => {
+            let editSongModal = document.getElementById("edit-song-modal"); 
+            let index = this.model.getEditSongId();
+            let song = this.model.currentList.songs[index];
+
+            let newTitle = document.getElementById("edit-title").value;
+            let newArtist = document.getElementById("edit-artist").value;
+            let newYouTubeId = document.getElementById("edit-youtubeid").value;
+            this.model.editSongTransaction(index, song.title, song.artist, song.youTubeId, newTitle, newArtist, newYouTubeId);
+
+            // ALLOW OTHER INTERACTIONS
+            this.model.toggleConfirmDialogOpen();
+
+            // CLOSE THE MODAL
+            editSongModal.classList.remove("is-visible");
+        }
+
+        // RESPOND TO THE USER CANCELING THE EDIT SONG
+        let editSongCancelButton = document.getElementById("edit-song-cancel-button");
+            let editSongModal = document.getElementById("edit-song-modal"); 
+            editSongCancelButton.onclick = (event) => {
+            // ALLOW OTHER INTERACTIONS
+            this.model.toggleConfirmDialogOpen();
+    
+            // CLOSE THE MODAL
+            editSongModal.classList.remove("is-visible");
         }
         
     }
@@ -272,6 +305,22 @@ export default class PlaylisterController {
                     this.model.addMoveSongTransaction(fromIndex, toIndex);
                 }
             }
+
+            card.ondblclick = (event) => {
+                let editSongModal = document.getElementById("edit-song-modal"); 
+                editSongModal.classList.add("is-visible");
+                this.model.toggleConfirmDialogOpen();
+                let currTitle = document.getElementById("edit-title");
+                let currArtist = document.getElementById("edit-artist");
+                let currYouTubeId = document.getElementById("edit-youtubeid");
+
+                currTitle.value = this.model.currentList.songs[i].title;
+                currArtist.value = this.model.currentList.songs[i].artist;
+                currYouTubeId.value = this.model.currentList.songs[i].youTubeId;
+
+                this.model.setEditSongId(i);
+            }
+
         }
     }
 

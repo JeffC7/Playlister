@@ -2,6 +2,7 @@ import jsTPS from "../common/jsTPS.js";
 import Playlist from "./Playlist.js";
 import AddSong_Transaction from "./transactions/AddSong_Transaction.js";
 import DeleteSong_Transaction from "./transactions/DeleteSong_Transaction.js";
+import EditSong_Transaction from "./transactions/EditSong_Transaction.js";
 import MoveSong_Transaction from "./transactions/MoveSong_Transaction.js";
 
 /**
@@ -94,6 +95,13 @@ export default class PlaylisterModel {
         this.deleteSongId = initId;
     }
 
+    getEditSongId() {
+        return this.editSongId;
+    }
+
+    setEditSongId(initId) {
+        this.editSongId = initId;
+    }
 
 
     toggleConfirmDialogOpen() {
@@ -281,6 +289,13 @@ export default class PlaylisterModel {
         this.view.refreshPlaylist(this.currentList);
     }
 
+    editSong(index, newTitle, newArtist, newYouTubeId) {
+        this.currentList.songs[index].title = newTitle;
+        this.currentList.songs[index].artist = newArtist;
+        this.currentList.songs[index].youTubeId = newYouTubeId;
+        this.saveLists();
+        this.view.refreshPlaylist(this.currentList);
+    }
     // SIMPLE UNDO/REDO FUNCTIONS, NOTE THESE USE TRANSACTIONS
 
     undo() {
@@ -314,6 +329,12 @@ export default class PlaylisterModel {
 
     addDeleteSongTransaction(index, song) {
         let transaction = new DeleteSong_Transaction(this, index, song);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
+    editSongTransaction(index, oldTitle, oldArtist, oldYouTubeId, newTitle, newArtist, newYouTubeId) {
+        let transaction = new EditSong_Transaction(this, index, oldTitle, oldArtist, oldYouTubeId, newTitle, newArtist, newYouTubeId)
         this.tps.addTransaction(transaction);
         this.view.updateToolbarButtons(this);
     }

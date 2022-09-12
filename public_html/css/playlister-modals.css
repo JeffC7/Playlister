@@ -57,6 +57,24 @@
   font-size: 48pt;
 }
 
+.edit-modal-center-content {
+  display: grid;
+  grid-template-columns: auto auto;
+  row-gap: 10px;
+  width: 500px;
+}
+
+.edit-modal-center-content input {
+  font-size: 30px;
+  width: 300px;
+}
+
+
+.edit-modal-center-content-item {
+  font-size: 20pt;
+  font-weight: bold;
+}
+
 span {
   font-weight: bold;
   font-style: italic;
