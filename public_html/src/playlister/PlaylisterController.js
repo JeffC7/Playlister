@@ -114,7 +114,6 @@ export default class PlaylisterController {
         deleteSongConfirmButton.onclick = (event) => {
             let deleteSongId = this.model.getDeleteSongId();
 
-            // DELETE THE SONG, THIS IS NOT UNDOABLE
             let song = this.model.currentList.songs[deleteSongId];
             // let cloneSong = JSON.parse(JSON.stringify(song)); //stringify to turn song into a string then parse turns it into a js object
             // deep copy = pointer to values are different and if the values had pointers to them, they'd be different too

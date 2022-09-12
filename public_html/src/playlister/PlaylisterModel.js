@@ -290,9 +290,8 @@ export default class PlaylisterModel {
     }
 
     editSong(index, newTitle, newArtist, newYouTubeId) {
-        this.currentList.songs[index].title = newTitle;
-        this.currentList.songs[index].artist = newArtist;
-        this.currentList.songs[index].youTubeId = newYouTubeId;
+        let editedSong = {title: newTitle, artist: newArtist, youTubeId: newYouTubeId};
+        this.currentList.songs[index] = editedSong;
         this.saveLists();
         this.view.refreshPlaylist(this.currentList);
     }

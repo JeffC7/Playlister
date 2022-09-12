@@ -140,7 +140,6 @@ export default class PlaylisterView {
                 // OPEN UP THE DIALOG
                 deleteListModal.classList.add("is-visible");
                 this.controller.model.toggleConfirmDialogOpen();
-                console.log("clicked");
                 
             }
 
@@ -240,11 +239,27 @@ export default class PlaylisterView {
             this.disableButton("redo-button");
             this.disableButton("close-button");
         } else {
-            this.enableButton('add-button');
-            this.enableButton("add-list-button");
-            this.enableButton("undo-button");
-            this.enableButton("redo-button");
-            this.enableButton("close-button");
+            if (model.hasCurrentList()) {
+                this.enableButton("add-button");
+                this.enableButton("close-button");
+                this.disableButton("add-list-button");
+            } else {
+                this.disableButton("add-button");
+                this.disableButton("close-button");
+                this.enableButton("add-list-button");
+            }
+
+            if (tps.hasTransactionToUndo()) {
+                this.enableButton("undo-button");
+            } else {
+                this.disableButton("undo-button");
+            }
+
+            if (tps.hasTransactionToRedo()) {
+                this.enableButton("redo-button");
+            } else {
+                this.disableButton("redo-button");
+            }
         }
     }
 
